@@ -643,15 +643,6 @@ def main(args):
         size=(args.width, args.height),
     )
     
-    train_verification_dataset = BgAiDataset(
-        dataset_name=args.dataset_name,
-        source_column_name=args.source_column_name,
-        mask_column_name=args.mask_column_name,
-        target_column_name=args.target_column_name,
-        caption_column_name=args.caption_column_name,
-        size=(args.width, args.height),
-    )
-    
     validation_dataset = BgAiDataset(
         dataset_name=args.dataset_name,
         source_column_name=args.source_column_name,
@@ -663,13 +654,6 @@ def main(args):
 
     train_dataloader = torch.utils.data.DataLoader(
         train_dataset,
-        shuffle=True,
-        batch_size=args.train_batch_size,
-        collate_fn=collate_fn,
-    )
-    
-    train_verification_dataloader = torch.utils.data.DataLoader(
-        train_verification_dataset,
         shuffle=True,
         batch_size=args.train_batch_size,
         collate_fn=collate_fn,
