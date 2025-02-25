@@ -1,5 +1,6 @@
-from torch.utils.data import Dataset
+from torch.utils.data import Dataset, DataLoader
 from torchvision import transforms
+import torch
 
 class BgAiDataset(Dataset):
     """
@@ -66,9 +67,10 @@ class BgAiDataset(Dataset):
 
     def __getitem__(self, index):
         # Load images on demand
-        source_image = self.dataset["train"][self.source_column_name][index]
-        target_image = self.dataset["train"][self.target_column_name][index]
-        mask_image = self.dataset["train"][self.mask_column_name][index]
+        sample = self.dataset["train"][index]
+        source_image = sample[self.source_column_name]
+        target_image = sample[self.target_column_name]
+        mask_image = sample[self.mask_column_name]
         
         # Convert image modes if needed
         if not source_image.mode == "RGB":
@@ -98,3 +100,82 @@ class BgAiDataset(Dataset):
         }
         
         return example
+
+def collate_fn(batch):
+    """
+    Custom collate function for BgAiDataset to properly batch tensors and captions.
+    
+    Args:
+        batch: List of samples from BgAiDataset
+        
+    Returns:
+        Dictionary with batched tensors and list of captions
+    """
+    source_images = torch.stack([item['source_image'] for item in batch])
+    target_images = torch.stack([item['target_image'] for item in batch])
+    masks = torch.stack([item['mask'] for item in batch])
+    captions = [item['caption'] for item in batch]
+    
+    return {
+        "source_image": source_images,
+        "target_image": target_images,
+        "mask": masks,
+        "caption": captions
+    }
+
+if __name__ == "__main__":
+    # Create dataset instance
+    dataset = BgAiDataset(
+        dataset_name="raresense/BGData",
+        source_column_name="ghost_images",
+        mask_column_name="binary_mask",  # You'll need to replace this with the actual mask column name
+        target_column_name="target",
+        caption_column_name="prompt"
+    )
+    
+    # Print dataset length
+    print(f"Dataset size: {len(dataset)}")
+    
+    # Get first sample
+    print("Loading first sample...")
+    sample = dataset[0]
+    
+    # Print tensor shapes
+    print("\nTensor shapes:")
+    print(f"Source image: {sample['source_image'].shape}")
+    print(f"Target image: {sample['target_image'].shape}")
+    print(f"Mask: {sample['mask'].shape}")
+    
+    # Print caption (truncated if too long)
+    caption = sample["caption"]
+    if len(caption) > 100:
+        caption = caption[:100] + "..."
+    print(f"\nCaption: {caption}")
+
+    # Create and test DataLoader with custom collate function
+    batch_size = 4
+    dataloader = DataLoader(
+        dataset, 
+        batch_size=batch_size,
+        shuffle=True,
+        collate_fn=collate_fn
+    )
+    
+    print("\nTesting batch processing:")
+    print(f"Getting first batch of size {batch_size}...")
+    batch = next(iter(dataloader))
+    
+    # Print tensor shapes for batch
+    print("Tensor shapes for batch:")
+    print(f"Source images: {batch['source_image'].shape}")
+    print(f"Target images: {batch['target_image'].shape}")
+    print(f"Masks: {batch['mask'].shape}")
+    print(f"Number of captions: {len(batch['caption'])}")
+    
+    # Print first caption in batch
+    if len(batch['caption'][0]) > 100:
+        first_caption = batch['caption'][0][:100] + "..."
+    else:
+        first_caption = batch['caption'][0]
+    print(f"First caption in batch: {first_caption}")
+    
