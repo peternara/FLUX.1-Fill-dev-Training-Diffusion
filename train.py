@@ -519,12 +519,12 @@ def main(args):
                     # For DeepSpeed models, we need to get the underlying model
                     # model = model.module
                 if isinstance(unwrap_model(model), FluxTransformer2DModel):
-                    unwrap_model(model).save_pretrained(os.path.join(output_dir, "transformer"))
+                    unwrap_model(model).save_pretrained(os.path.join(output_dir, "transformer"),max_shard_size="50GB")
                 elif isinstance(unwrap_model(model), (CLIPTextModelWithProjection, T5EncoderModel)):
                     if isinstance(unwrap_model(model), CLIPTextModelWithProjection):
-                        unwrap_model(model).save_pretrained(os.path.join(output_dir, "text_encoder"))
+                        unwrap_model(model).save_pretrained(os.path.join(output_dir, "text_encoder"),max_shard_size="50GB")
                     else:
-                        unwrap_model(model).save_pretrained(os.path.join(output_dir, "text_encoder_2"))
+                        unwrap_model(model).save_pretrained(os.path.join(output_dir, "text_encoder_2"),max_shard_size="50GB")
                 else:
                     raise ValueError(f"Wrong model supplied: {type(model)=}.")
 
@@ -1010,7 +1010,7 @@ def main(args):
         pipeline = FluxFillPipeline.from_pretrained(args.pretrained_model_name_or_path, transformer=transformer)
 
         # save the pipeline
-        pipeline.save_pretrained(args.output_dir)
+        pipeline.save_pretrained(args.output_dir, max_shard_size="50GB")
 
         # Final inference
         # Load previous pipeline
