@@ -635,20 +635,20 @@ def main(args):
 
     # Dataset and DataLoaders creation:
     train_dataset = BgAiDataset(
-        dataset_name=args.dataset_name,
-        source_column_name=args.source_column_name,
-        mask_column_name=args.mask_column_name,
-        target_column_name=args.target_column_name,
-        caption_column_name=args.caption_column_name,
+        dataset_name=args.train_dataset_name,
+        source_column_name=args.source_column,
+        mask_column_name=args.mask_column,
+        target_column_name=args.target_column,
+        caption_column_name=args.caption_column,
         size=(args.width, args.height),
     )
     
     validation_dataset = BgAiDataset(
-        dataset_name=args.dataset_name,
-        source_column_name=args.source_column_name,
-        mask_column_name=args.mask_column_name,
-        target_column_name=args.target_column_name,
-        caption_column_name=args.caption_column_name,
+        dataset_name=args.test_dataset_name,
+        source_column_name=args.source_column,
+        mask_column_name=args.mask_column,
+        target_column_name=args.target_column,
+        caption_column_name=args.caption_column,
         size=(args.width, args.height),
     )
 

@@ -26,11 +26,21 @@ def parse_args(input_args=None):
         help="Variant of the model files of the pretrained model identifier from huggingface.co/models, 'e.g.' fp16",
     )
     parser.add_argument(
-        "--dataset_name",
+        "--train_dataset_name",
         type=str,
         default=None,
         help=(
             "The name of the Dataset (from the HuggingFace hub) containing the training data of instance images (could be your own, possibly private,"
+            " dataset). It can also be a path pointing to a local copy of a dataset in your filesystem,"
+            " or to a folder containing files that 🤗 Datasets can understand."
+        ),
+    )
+    parser.add_argument(
+        "--test_dataset_name",
+        type=str,
+        default=None,
+        help=(
+            "The name of the Dataset (from the HuggingFace hub) containing the testing data of instance images (could be your own, possibly private,"
             " dataset). It can also be a path pointing to a local copy of a dataset in your filesystem,"
             " or to a folder containing files that 🤗 Datasets can understand."
         ),
@@ -56,10 +66,26 @@ def parse_args(input_args=None):
     )
 
     parser.add_argument(
-        "--image_column",
+        "--source_column",
+        type=str,
+        default="image",
+        help="The column of the dataset containing the source image. By "
+        "default, the standard Image Dataset maps out 'file_name' "
+        "to 'image'.",
+    )
+    parser.add_argument(
+        "--target_column",
         type=str,
         default="image",
         help="The column of the dataset containing the target image. By "
+        "default, the standard Image Dataset maps out 'file_name' "
+        "to 'image'.",
+    )
+    parser.add_argument(
+        "--mask_column",
+        type=str,
+        default="image",
+        help="The column of the dataset containing the mask image. By "
         "default, the standard Image Dataset maps out 'file_name' "
         "to 'image'.",
     )
@@ -109,15 +135,6 @@ def parse_args(input_args=None):
         type=int,
         default=4,
         help="Number of images that should be generated during validation with `validation_prompt`.",
-    )
-    parser.add_argument(
-        "--validation_epochs",
-        type=int,
-        default=50,
-        help=(
-            "Run dreambooth validation every X epochs. Dreambooth validation consists of running the prompt"
-            " `args.validation_prompt` multiple times: `args.num_validation_images`."
-        ),
     )
     parser.add_argument(
         "--with_prior_preservation",
@@ -402,18 +419,6 @@ def parse_args(input_args=None):
     parser.add_argument("--local_rank", type=int, default=-1, help="For distributed training: local_rank")
 
     parser.add_argument(
-        "--dataroot",
-        type=str,
-        help=(
-            'The dataset dir'
-        ),
-    )
-    parser.add_argument(
-        "--train_data_list",
-        type=str,
-        default=None,
-    )
-    parser.add_argument(
         "--use_local_model", action='store_true', help="Load local model"
     )
     parser.add_argument(
@@ -421,17 +426,6 @@ def parse_args(input_args=None):
     )
     parser.add_argument("--validation_steps", type=int, default=1000)
     parser.add_argument("--num_inference_steps", type=int, default=50)
-    parser.add_argument(
-        "--validation_data_list",
-        type=str,
-        default=None,
-    )
-    parser.add_argument(
-        "--train_verification_list",
-        type=str,
-        default=None,
-        help="The train verification list"
-    )
     
     parser.add_argument(
         "--width", type=int, default=512, help="The width for generated image"
@@ -479,9 +473,6 @@ def parse_args(input_args=None):
 
     parser.add_argument(
         "--num_img", type=int, default=1, help="The number of images to generate"
-    )
-    parser.add_argument(
-        "--pretrained_inpaint_model_name_or_path", type=str, default="xiaozaa/flux1-fill-dev-diffusers", help="The path to the pretrained inpaint model"
     )
     parser.add_argument(
         "--train_lora", action='store_true', help="Train LoRA"

@@ -1,12 +1,18 @@
+# Define variables for columns
+export SOURCE_COLUMN="ghost_images"
+export TARGET_COLUMN="target"
+export MASK_COLUMN="binary_mask"
+export CAPTION_COLUMN="prompt"
 export MODEL_NAME="black-forest-labs/FLUX.1-dev"
-export INSTANCE_DIR="dog"
 export OUTPUT_DIR="trained-flux-inpaint"
 
 accelerate launch --config_file accelerate_config.yaml train.py \
   --pretrained_model_name_or_path=$MODEL_NAME  \
-  --pretrained_inpaint_model_name_or_path="xiaozaa/flux1-fill-dev-diffusers" \
-  --instance_data_dir=$INSTANCE_DIR \
   --output_dir=$OUTPUT_DIR \
+  --source_column=$SOURCE_COLUMN \
+  --target_column=$TARGET_COLUMN \
+  --mask_column=$MASK_COLUMN \
+  --caption_column=$CAPTION_COLUMN \
   --mixed_precision="bf16" \
   --train_batch_size=1 \
   --guidance_scale=1 \
@@ -17,13 +23,8 @@ accelerate launch --config_file accelerate_config.yaml train.py \
   --lr_scheduler="constant" \
   --lr_warmup_steps=0 \
   --max_train_steps=100000 \
-  --validation_epochs=2500 \
   --validation_steps=500 \
   --seed="42" \
-  --dataroot="../data/VITON-HD"  \                  # Adjust the path to your dataset
-  --train_data_list="train_pairs.txt"  \            # Adjust the txt file to your train data list
-  --train_verification_list="subtrain_1.txt"  \     # Adjust the txt file to your train verification list
-  --validation_data_list="subtest_1.txt"  \         # Adjust the txt file to your validation data list
   --height=768 \
   --width=576 \
   --max_sequence_length=512  \
