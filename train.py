@@ -56,49 +56,66 @@ def log_validation(
     tag,
     is_final_validation=False,
 ):
-    logger.info(
-        f"Running {tag}... \n "
-    )
+    logger.info(f"Running {tag}... \n ")
 
     pipeline = pipeline.to(accelerator.device)
-    # pipeline.set_progress_bar_config(disable=True)
+    # Use appropriate precision context
+    if accelerator.mixed_precision == "bf16":
+        autocast_ctx = torch.autocast("cuda", dtype=torch.bfloat16)
+    elif accelerator.mixed_precision == "fp16":
+        autocast_ctx = torch.autocast("cuda", dtype=torch.float16)
+    else:
+        autocast_ctx = nullcontext()
 
     # run inference
     generator = torch.Generator(device=accelerator.device).manual_seed(args.seed) if args.seed else None
-    # autocast_ctx = torch.autocast(accelerator.device.type) if not is_final_validation else nullcontext()
-    autocast_ctx = nullcontext()
-
+    
     with autocast_ctx:
         images = []
         prompts = []
         control_images = []
         control_masks = []
+        
+        # Process smaller batches to avoid memory issues
+        validation_batch_size = max(1, args.train_batch_size // 2)  # Reduce batch size for validation
+        
         for batch in dataloader:
-            
             prompt = batch['caption']
             control_image = batch['source_image']
             control_mask = batch['mask']
+            target_image = batch['target_image']
             
-        
-            height = args.height
-            width = args.width
+            # Process one image at a time if needed
+            for i in range(0, len(prompt), validation_batch_size):
+                batch_prompt = prompt[i:i+validation_batch_size]
+                batch_control_image = control_image[i:i+validation_batch_size]
+                batch_control_mask = control_mask[i:i+validation_batch_size]
+                
+                result = pipeline(
+                    prompt=batch_prompt,
+                    height=args.height,
+                    width=args.width,
+                    image=batch_control_image, 
+                    mask_image=batch_control_mask,
+                    num_inference_steps=28,
+                    generator=generator,
+                    guidance_scale=30,
+                ).images
+                
+                images.extend(result)
+                prompts.extend(batch_prompt)
+                control_images.extend(batch_control_image)
+                control_masks.extend(batch_control_mask)
+                
+                # Break after first batch during training to save time
+                if not is_final_validation:
+                    break
             
-            result = pipeline(
-                prompt=prompt,
-                height=height,
-                width=width,
-                image=control_image,
-                mask_image=control_mask,
-                num_inference_steps=28,
-                generator=generator,
-                guidance_scale=30,
-            ).images
-            
-            images.extend(result)
-            prompts.extend(prompt)
-            control_images.extend(control_image)
-            control_masks.extend(control_mask)
+            # Only process one batch during training validation
+            if not is_final_validation:
+                break
 
+    # Rest of the logging code remains the same
     for tracker in accelerator.trackers:
         phase_name = tag
         if tracker.name == "wandb":
