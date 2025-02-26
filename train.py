@@ -76,12 +76,12 @@ def log_validation(
         for batch in dataloader:
             
             prompt = batch['caption']
-            control_image = batch['target_image']
+            control_image = batch['source_image']
             control_mask = batch['mask']
             
         
             height = args.height
-            width = args.width*2
+            width = args.width
             
             result = pipeline(
                 prompt=prompt,
@@ -822,7 +822,7 @@ def main(args):
                     vae_scale_factor=vae_scale_factor,
                     image=control_image,
                     mask=control_mask,
-                    width=args.width*2,
+                    width=args.width,
                     height=args.height,
                     batch_size=batch_size,
                     num_images_per_prompt=1,
@@ -836,13 +836,13 @@ def main(args):
                     dropout = torch.nn.Dropout(p=args.dropout_prob)
                     inpaint_cond = dropout(inpaint_cond)
 
-                model_input = encode_images_to_latents(vae, pixel_values, weight_dtype, args.height, args.width*2)
+                model_input = encode_images_to_latents(vae, pixel_values, weight_dtype, args.height, args.width)
                 
                 latent_image_ids = prepare_latents(
                     vae_scale_factor,
                     batch_size,
                     args.height,
-                    args.width*2,
+                    args.width,
                     weight_dtype,
                     accelerator.device,
                 )
@@ -906,7 +906,7 @@ def main(args):
                 model_pred = FluxFillPipeline._unpack_latents(
                     model_pred,
                     height=args.height,
-                    width=args.width*2,
+                    width=args.width,
                     vae_scale_factor=vae_scale_factor,
                 )
 
@@ -981,15 +981,6 @@ def main(args):
                         tokenizer_2=tokenizer_two,
                         text_encoder=text_encoder_one,
                         text_encoder_2=text_encoder_two,
-                    )
-                    
-                    log_validation(
-                        pipeline=pipeline,
-                        args=args,
-                        accelerator=accelerator,
-                        dataloader=train_verification_dataloader,
-                        tag="train verification",
-                        epoch=epoch,
                     )
                     
                     log_validation(
