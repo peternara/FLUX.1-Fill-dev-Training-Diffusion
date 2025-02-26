@@ -724,7 +724,7 @@ def main(args):
     # We need to initialize the trackers we use, and also store our configuration.
     # The trackers initializes automatically on the main process.
     if accelerator.is_main_process:
-        tracker_name = "dreambooth-flux-inpaint"
+        tracker_name = "BGAI-flux-inpaint"
         accelerator.init_trackers(tracker_name, config=vars(args), init_kwargs={"wandb": {"settings": wandb.Settings(code_dir=".")}})
     # Train!
     total_batch_size = args.train_batch_size * accelerator.num_processes * args.gradient_accumulation_steps
