@@ -32,7 +32,7 @@ accelerate launch train.py \
   --height=768 \
   --width=576 \
   --max_sequence_length=512  \
-  --checkpointing_steps=5  \
+  --checkpointing_steps=10  \
   --report_to="wandb" \
-  --train_base_model \
+  --train_base_model
   # --resume_from_checkpoint="latest"  \
