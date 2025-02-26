@@ -970,8 +970,8 @@ def main(args):
             progress_bar.set_postfix(**logs)
             accelerator.log(logs, step=global_step)
             
-            if accelerator.sync_gradients:
-                if global_step % args.validation_steps == 1:
+                # Run validation every args.validation_steps steps (e.g., every 5 steps)
+                if global_step % args.validation_steps == 0:
                     pipeline = FluxFillPipeline.from_pretrained(
                         args.pretrained_model_name_or_path,
                         transformer=accelerator.unwrap_model(transformer),
