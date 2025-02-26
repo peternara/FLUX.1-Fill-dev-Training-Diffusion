@@ -381,7 +381,7 @@ def main(args):
         do_binarize=True,
     )
     transformer = FluxTransformer2DModel.from_pretrained(
-        args.pretrained_inpaint_model_name_or_path, revision=args.revision, variant=args.variant
+        args.pretrained_model_name_or_path, revision=args.revision, variant=args.variant, subfolder="transformer"
     )
     
 
