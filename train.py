@@ -75,9 +75,10 @@ def log_validation(
         prompts = []
         control_images = []
         control_masks = []
+        target_images = []
         
-        # Process smaller batches to avoid memory issues
-        validation_batch_size = max(1, args.train_batch_size // 2)  # Reduce batch size for validation
+        # Process full dataset - no limit on samples for validation
+        # This ensures we use all images from the test dataset
         
         for batch in dataloader:
             prompt = batch['caption']
@@ -85,11 +86,14 @@ def log_validation(
             control_mask = batch['mask']
             target_image = batch['target_image']
             
-            # Process one image at a time if needed
+            # Process in smaller batches to avoid memory issues
+            validation_batch_size = max(1, args.train_batch_size // 2)  # Reduce batch size for validation
+            
             for i in range(0, len(prompt), validation_batch_size):
                 batch_prompt = prompt[i:i+validation_batch_size]
                 batch_control_image = control_image[i:i+validation_batch_size]
                 batch_control_mask = control_mask[i:i+validation_batch_size]
+                batch_target_image = target_image[i:i+validation_batch_size]
                 
                 result = pipeline(
                     prompt=batch_prompt,
@@ -106,41 +110,27 @@ def log_validation(
                 prompts.extend(batch_prompt)
                 control_images.extend(batch_control_image)
                 control_masks.extend(batch_control_mask)
-                
-                # Break after first batch during training to save time
-                if not is_final_validation:
-                    break
-            
-            # Only process one batch during training validation
-            if not is_final_validation:
-                break
+                target_images.extend(batch_target_image)
 
-    # Rest of the logging code remains the same
+    # Log to trackers
+    tracker_key = "test" if is_final_validation else "validation"
     for tracker in accelerator.trackers:
-        phase_name = tag
         if tracker.name == "wandb":
-            tracker.log(
-                {
-                    phase_name: [
-                        wandb.Image(
-                            image, 
-                            caption=f"{i} {prompt}",
-                        ) 
-                        for i, (image, prompt, control_mask) in enumerate(zip(images, prompts, control_masks))
-                    ],
-                    f"{phase_name}_control_images": [
-                        wandb.Image(control_image, caption=f"{i} Control Image")
-                        for i, control_image in enumerate(control_images)
-                    ],
-                }
-            )
-
+            formatted_images = []
+            
+            for input_img, mask_img, gen_img, tgt_img, prompt in zip(control_images, control_masks, images, target_images, prompts):
+                formatted_images.append(wandb.Image(input_img, caption="Source Image"))
+                formatted_images.append(wandb.Image(mask_img, caption="Mask"))
+                formatted_images.append(wandb.Image(tgt_img, caption="Target Image"))
+                formatted_images.append(wandb.Image(gen_img, caption=prompt))
+            
+            tracker.log({tracker_key: formatted_images})
+    
     del pipeline
     if torch.cuda.is_available():
         torch.cuda.empty_cache()
-
+    
     return images
-
 
 def import_model_class_from_model_name_or_path(
     pretrained_model_name_or_path: str, revision: str, subfolder: str = "text_encoder"
