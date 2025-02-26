@@ -966,9 +966,9 @@ def main(args):
                     accelerator.save_state(save_path)
                     logger.info(f"Saved state to {save_path}")
 
-            logs = {"loss": loss.detach().item(), "lr": lr_scheduler.get_last_lr()[0]}
-            progress_bar.set_postfix(**logs)
-            accelerator.log(logs, step=global_step)
+                logs = {"loss": loss.detach().item(), "lr": lr_scheduler.get_last_lr()[0]}
+                progress_bar.set_postfix(**logs)
+                accelerator.log(logs, step=global_step)
             
                 # Run validation every args.validation_steps steps (e.g., every 5 steps)
                 if global_step % args.validation_steps == 0:
