@@ -807,12 +807,12 @@ def main(args):
             
             with accelerator.accumulate(models_to_accumulate):
                 # vae_scale_factor = 2 ** (len(vae.config.block_out_channels))
-                batch_size = batch["source_image"].shape[0]
-                pixel_values = batch["source_image"].to(dtype=vae.dtype)
+                batch_size = batch["target_image"].shape[0]
+                pixel_values = batch["target_image"].to(dtype=vae.dtype)
                 prompts = batch["caption"]
 
                 control_mask = batch["mask"].to(dtype=vae.dtype)
-                control_image = batch["target_image"].to(dtype=vae.dtype)
+                control_image = batch["source_image"].to(dtype=vae.dtype)
                 
                 
                 # print("image_proj.shape", image_proj.shape)
