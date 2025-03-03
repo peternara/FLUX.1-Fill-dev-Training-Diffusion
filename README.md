@@ -89,7 +89,7 @@ Below are examples of the model's performance before and after fine-tuning.
 
 | Source Image | Mask | Generated Output | Prompt |
 |:------------:|:----:|:---------------------:|:----------------:|
-| ![Source](https://cdn.discordapp.com/attachments/961218697094123561/1346087288756633632/T.152.jpg?ex=67c6e8fa&is=67c5977a&hm=59069ab08737b2037ee52ac1b9f8d872e0219c6e4c33f84e773a952a4c671ec0&) | ![Mask](https://cdn.discordapp.com/attachments/961218697094123561/1346087289050238987/image_27.png?ex=67c6e8fa&is=67c5977a&hm=8c3ed1a30ba5f468f39d3b47d236c10b169aaab6bcc094923ca94411833b44ae&) | ![Output]([path/to/target2.jpg](https://cdn.discordapp.com/attachments/961218697094123561/1346087289427853312/image_28.png?ex=67c6e8fa&is=67c5977a&hm=444072978daa3c25de906f52cd2a9095817d22af53956588ee40614f6bfe259e&)) | A lady wearing red turtleneck  posing in front of a massive graffiti-covered wall , high fashion, streetwear shoot, moody lighting, ultra-HD, cinematic |
+| ![Source](https://cdn.discordapp.com/attachments/961218697094123561/1346087288756633632/T.152.jpg?ex=67c6e8fa&is=67c5977a&hm=59069ab08737b2037ee52ac1b9f8d872e0219c6e4c33f84e773a952a4c671ec0&) | ![Mask](https://cdn.discordapp.com/attachments/961218697094123561/1346087289050238987/image_27.png?ex=67c6e8fa&is=67c5977a&hm=8c3ed1a30ba5f468f39d3b47d236c10b169aaab6bcc094923ca94411833b44ae&) | ![Output](https://cdn.discordapp.com/attachments/961218697094123561/1346087289427853312/image_28.png?ex=67c6e8fa&is=67c5977a&hm=444072978daa3c25de906f52cd2a9095817d22af53956588ee40614f6bfe259e&) | A lady wearing red turtleneck  posing in front of a massive graffiti-covered wall , high fashion, streetwear shoot, moody lighting, ultra-HD, cinematic |
 
 ## Model Inference
 
