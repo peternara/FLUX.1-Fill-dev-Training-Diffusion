@@ -1,6 +1,20 @@
 # FLUX.1-Fill-dev-Training
 
-This repository contains the code for training FLUX.1-Fill-dev, a powerful image inpainting model.
+This repository contains the code for training FLUX.1-Fill-dev, a powerful image inpainting model. This varient is specifically trained for high-quality background changing and generation in images. This model excels at:
+
+- **Seamless background replacement** for portraits, product photos, and landscapes
+- **Context-aware background generation** that matches the foreground subject
+- **Realistic background transitions** without edge artifacts or color inconsistencies
+- **Diverse background styles** including solid colors, gradients, natural scenes, and interior environments
+
+The training approach focuses on maintaining foreground subject integrity while completely transforming backgrounds, making it ideal for:
+
+- Portrait photography enhancement
+- E-commerce product image standardization
+- Real estate virtual staging
+- Social media content creation
+
+Unlike traditional image matting or background removal tools, FLUX.1-Fill-dev uses advanced diffusion techniques to generate photorealistic backgrounds that complement the subject, ensuring natural lighting, perspective, and shadows.
 
 ## Setup and Installation
 
@@ -12,7 +26,6 @@ git clone https://github.com/your-username/FLUX.1-Fill-dev-Training.git
 cd FLUX.1-Fill-dev-Training
 
 # Install dependencies
-pip install -r requirements.txt
 pip install accelerate transformers diffusers wandb
 ```
 
