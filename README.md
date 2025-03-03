@@ -79,13 +79,13 @@ To resume training from a checkpoint, uncomment the following line in `train_mod
 
 Below are examples of the model's performance before and after fine-tuning.
 
-### Example 1: Portrait Background Replacement
+### Example 1:
 
-| Source Image | Mask | Target (Ground Truth) | Generated Output |
+| Source Image | Mask | Generated Output | Prompt |
 |:------------:|:----:|:---------------------:|:----------------:|
-| ![Source](path/to/source1.jpg) | ![Mask](path/to/mask1.jpg) | ![Target](path/to/target1.jpg) | ![Output](path/to/output1.jpg) |
+| ![Source](https://cdn.discordapp.com/attachments/961218697094123561/1346079455235280896/55.jpg?ex=67c6e1af&is=67c5902f&hm=beadbb7ee6128abdaa5cf7ad1ce2d9bbb9ad2f7e7742aaffd0e4cf018d76de42&) | ![Mask](https://cdn.discordapp.com/attachments/961218697094123561/1346079455596249158/image_15.png?ex=67c6e1af&is=67c5902f&hm=dfd436581e2c54a01c70362f2dbdc5f8a60b0beba3f8ba2a9a96201bf96789d3&) | ![Output](https://cdn.discordapp.com/attachments/961218697094123561/1346079456002838548/image_17.png?ex=67c6e1af&is=67c5902f&hm=86987ef1d33766d98f10b4e6866813f631c4f716563f16799b36e8fcf06eed93&) | A model posing in front of a grand marble staircase inside a luxury mansion, opulent lighting, chandeliers glistening, cinematic ambiance, ultra-realistic, Vogue editorial, 8K |
 
-### Example 2: Object Removal
+### Example 2: 
 
 | Source Image | Mask | Target (Ground Truth) | Generated Output |
 |:------------:|:----:|:---------------------:|:----------------:|
