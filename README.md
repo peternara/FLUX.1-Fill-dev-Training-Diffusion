@@ -79,17 +79,17 @@ To resume training from a checkpoint, uncomment the following line in `train_mod
 
 Below are examples of the model's performance before and after fine-tuning.
 
-### Example 1:
+### Example 1: Complete Body Mask
 
 | Source Image | Mask | Generated Output | Prompt |
 |:------------:|:----:|:---------------------:|:----------------:|
 | ![Source](https://cdn.discordapp.com/attachments/961218697094123561/1346079455235280896/55.jpg?ex=67c6e1af&is=67c5902f&hm=beadbb7ee6128abdaa5cf7ad1ce2d9bbb9ad2f7e7742aaffd0e4cf018d76de42&) | ![Mask](https://cdn.discordapp.com/attachments/961218697094123561/1346079455596249158/image_15.png?ex=67c6e1af&is=67c5902f&hm=dfd436581e2c54a01c70362f2dbdc5f8a60b0beba3f8ba2a9a96201bf96789d3&) | ![Output](https://cdn.discordapp.com/attachments/961218697094123561/1346079456002838548/image_17.png?ex=67c6e1af&is=67c5902f&hm=86987ef1d33766d98f10b4e6866813f631c4f716563f16799b36e8fcf06eed93&) | A model posing in front of a grand marble staircase inside a luxury mansion, opulent lighting, chandeliers glistening, cinematic ambiance, ultra-realistic, Vogue editorial, 8K |
 
-### Example 2: 
+### Example 2: Garment Mask Only
 
-| Source Image | Mask | Target (Ground Truth) | Generated Output |
+| Source Image | Mask | Generated Output | Prompt |
 |:------------:|:----:|:---------------------:|:----------------:|
-| ![Source](path/to/source2.jpg) | ![Mask](path/to/mask2.jpg) | ![Target](path/to/target2.jpg) | ![Output](path/to/output2.jpg) |
+| ![Source](https://cdn.discordapp.com/attachments/961218697094123561/1346087288756633632/T.152.jpg?ex=67c6e8fa&is=67c5977a&hm=59069ab08737b2037ee52ac1b9f8d872e0219c6e4c33f84e773a952a4c671ec0&) | ![Mask](https://cdn.discordapp.com/attachments/961218697094123561/1346087289050238987/image_27.png?ex=67c6e8fa&is=67c5977a&hm=8c3ed1a30ba5f468f39d3b47d236c10b169aaab6bcc094923ca94411833b44ae&) | ![Output]([path/to/target2.jpg](https://cdn.discordapp.com/attachments/961218697094123561/1346087289427853312/image_28.png?ex=67c6e8fa&is=67c5977a&hm=444072978daa3c25de906f52cd2a9095817d22af53956588ee40614f6bfe259e&)) | A lady wearing red turtleneck  posing in front of a massive graffiti-covered wall , high fashion, streetwear shoot, moody lighting, ultra-HD, cinematic |
 
 ## Model Inference
 
