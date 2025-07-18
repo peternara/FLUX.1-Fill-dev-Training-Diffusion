@@ -159,6 +159,19 @@ def prepare_latent_image_ids(batch_size, height, width, device, dtype):
         latent_image_id_channels,
     )
 
+    # latent_image_ids 의 간단 예)
+    #         → height = 4, width = 4
+    #         → latent_image_ids          = torch.zeros(2, 2, 3)  # (4//2, 4//2, 3) → (2, 2, 3)
+    #         → latent_image_ids[..., 1] += torch.arange(2)[:, None]  # (2, 1) > (2, 2)
+    #         → latent_image_ids[..., 2] += torch.arange(2)[None, :]  # (1, 2) > (2, 2)
+    #         → latent_image_ids          = latent_image_ids.reshape(4, 3)  # (2*2, 3)
+    # 
+    #         → tensor([
+    #                 [0., 0., 0.],  # (0,0): 채널 0=0, 채널 1=i=0, 채널 2=j=0
+    #                 [0., 0., 1.],  # (0,1): 채널 0=0, 채널 1=i=0, 채널 2=j=1
+    #                 [0., 1., 0.],  # (1,0): 채널 0=0, 채널 1=i=1, 채널 2=j=0
+    #                 [0., 1., 1.]   # (1,1): 채널 0=0, 채널 1=i=1, 채널 2=j=1
+    #                 ], dtype=torch.float32)
     return latent_image_ids.to(device=device, dtype=dtype)
 
 
