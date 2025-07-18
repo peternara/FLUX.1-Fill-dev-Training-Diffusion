@@ -107,20 +107,41 @@ def prepare_latent_image_ids(batch_size, height, width, device, dtype):
     #                                  ])    
     #        → 정리하면, 이는 broadcasting 연산을 위해서,
     #                → latent_image_ids[..., 1]의 shape은 (height//2, width//2) = (32, 32)    
-    #                → torch.arange(height // 2)[:, None]의 shape은 (32, 1)
+    #                → torch.arange(height // 2)[:, None]의 shape은 (32, 1) << 세로
     #                → 이 두 텐서를 더하면 broadcasting에 의해 (32, 32) 텐서가 만들어지고,
     #                → 그 결과는 각 행마다 해당 행 인덱스(i) 값이 채워진 형태
     # 최종 결과 예) 실제 목적 
-    # [[0, 0, 0, ..., 0],
-    # [1, 1, 1, ..., 1],
-    # [2, 2, 2, ..., 2],
-    #  ...
-    # [31, 31, 31, ..., 31]]
+    # [
+    #         [0, 0, 0, ..., 0],
+    #         [1, 1, 1, ..., 1],
+    #         [2, 2, 2, ..., 2],
+    #          ...
+    #         [31, 31, 31, ..., 31]
+    # ]
     latent_image_ids[..., 1] = (
         latent_image_ids[..., 1] + torch.arange(height // 2)[:, None]
     ) # (H/2, W/2), 각 (i,j) 위치에 i값이 들어감
 
     # 세 번째 채널(인덱스 2)에 column 인덱스를 각 열에 반복해서 채움
+    #        → torch.arange(height // 2) : 0부터 (height//2 - 1)까지의 값을 담은 1D 텐서 
+    #                → ex) height = 64 → torch.arange(32) = tensor([0, 1, 2, ..., 31]) 
+    #        → [None, :] # 위와 이부분이 다름 이전에는 세로(32, 1) 여기서는 가로(1, 32)
+    #                → 위 텐서를 (1, 32)로 reshape합니다.
+    #                → 그래서, 가로로 된 벡터 (row vector)
+    #        → 위의 두개를 합친 예를 보면,  
+    #                → torch.arange(3)[None, :]
+    #                        → tensor([[0, 1, 2]])
+    #        → 정리하면, 이는 broadcasting 연산을 위해서,
+    #                → latent_image_ids[..., 2]의 shape은 (height//2, width//2) = (32, 32)
+    #                → torch.arange(width // 2)[None, :]의 shape은 (1, 32) << 가로
+    #                → 이 둘을 더하면 broadcasting에 의해 (32, 32) 텐서가 되고,
+    #                → 그 결과는 각 열마다 해당 열 인덱스(j) 값이 채워진 형태
+    # 최종 결과 예) 실제 목적 
+    # [
+    #         [0, 1, 2],
+    #         [0, 1, 2],
+    #         [0, 1, 2]
+    # ]
     latent_image_ids[..., 2] = (
         latent_image_ids[..., 2] + torch.arange(width // 2)[None, :]
     ) # (H/2, W/2), 각 (i,j) 위치에 j값이 들어감
