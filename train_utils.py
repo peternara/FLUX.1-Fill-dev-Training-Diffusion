@@ -165,13 +165,19 @@ def prepare_latent_image_ids(batch_size, height, width, device, dtype):
     #         → latent_image_ids[..., 1] += torch.arange(2)[:, None]  # (2, 1) > (2, 2)
     #         → latent_image_ids[..., 2] += torch.arange(2)[None, :]  # (1, 2) > (2, 2)
     #         → latent_image_ids          = latent_image_ids.reshape(4, 3)  # (2*2, 3)
-    # 
+    #         → 아래 처럼 항상 0, 1 값만 들어가는것이 아님..저런형식으로 그냥 들어감 0~N         
     #         → tensor([
     #                 [0., 0., 0.],  # (0,0): 채널 0=0, 채널 1=i=0, 채널 2=j=0
     #                 [0., 0., 1.],  # (0,1): 채널 0=0, 채널 1=i=0, 채널 2=j=1
     #                 [0., 1., 0.],  # (1,0): 채널 0=0, 채널 1=i=1, 채널 2=j=0
     #                 [0., 1., 1.]   # (1,1): 채널 0=0, 채널 1=i=1, 채널 2=j=1
     #                 ], dtype=torch.float32)
+
+    # [요약]
+    #         → latent_image_ids는 이렇게 구성
+    #         → shape: (H/2 * W/2, 3)
+    #         → 각 row는 (채널0, y좌표, x좌표)의 구조 !! <<< !!!
+    #         → y, x 좌표는 이미지 공간 내 위치를 나타냄   <<< !!! 
     return latent_image_ids.to(device=device, dtype=dtype)
 
 
